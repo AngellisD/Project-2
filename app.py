@@ -21,10 +21,13 @@ engine = create_engine("sqlite:///db/collision.sqlite")
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db/collision.sqlite"
 db = SQLAlchemy(app)
 
+
+
 @app.route("/")
 def index():
     """Return the homepage."""
     return render_template("index.html")
+    
 
 
 @app.route("/area_name")
@@ -32,6 +35,8 @@ def names():
      areas = engine.execute(f'select distinct AreaName from traffic_collision')
      result = {'available_areas': [dict(row) for row in areas]}
      return jsonify(result)
+
+
 
 @app.route('/get_city_by_name/<name>')
 def get_city_by_name(name):
@@ -42,8 +47,19 @@ def get_city_by_name(name):
 @app.route('/get_city_by_zip/<zip>')
 def get_city_by_zip(zip):
      data = engine.execute(f'select * from traffic_collision where "ZipCodes" = "{zip}";')
-     result = {'zip': [dict(row) for row in data]}
+     result = {'available_zip': [dict(row) for row in data]}
      return jsonify(result)
+
+
+
+@app.errorhandler(404)
+#Controlador del codigo de error
+def not_found(error):
+	return 'Not found'
+
+@app.errorhandler(500)
+def server_error(error):
+	return 'Internal server error... Sorry about that'
 
 if __name__=="__main__":
      app.run()

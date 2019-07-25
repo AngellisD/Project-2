@@ -9,3 +9,16 @@ h1{
 .row{
   padding: 20px
 }
+
+/* The styles for the parallax */
+.hero {
+  position: relative;
+  height: 550px;
+  padding: 40px;
+  margin: 0;
+  background: black;
+  background-image: url("collision.jpeg");
+  background-attachment: fixed;
+  background-position: bottom center;
+  background-size: cover;
+}
