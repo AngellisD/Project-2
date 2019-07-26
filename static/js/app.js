@@ -12,82 +12,21 @@ $.get(`/area_name`, function(areaResponse){
   
   }
 });
-$.get(`/area_name`, function builCharts(traffic_collision){
-  console.log(areaResponse);
-  let AreaID = areaResponse.are_ids,
-  let Names = areaResponse.names;
-  let areaLabels = areaResponse.area_labels;
 
-   // @TODO: Build a Pie Chart
-   let trace1 = {
-    x: otuID,
-    y: sampleValues,
-    mode: 'markers',
-    marker: {
-      size: sampleValues,
-      color: otuID,
-      colorscale: 'Earth'
-    }
-  };
+// Generate list of available zip codes
 
-  // HINT: You will need to use slice() to grab the top 10 sample_values,
-
-  let data = [trace1];
-
-  let layout = {
-  title: 'Bubble Chart'
-};
-
-Plotly.newPlot('bubble', data, layout);
-})
-// otu_ids, and labels (10 each).
-d3.json(`/samples/${sample}`).then(sampleData => {
-  console.log(sampleData);
-
-  let pie_values=sampleData.sample_values.slice(0,10);
-  let pie_labels=sampleData.otu_ids.slice(0,10);
-  let pie_hover=sampleData.otu_labels.slice(0,10);
-
-  let data =[{
-    values:pie_values,
-    labels:pie_labels,
-    hovertext:pie_hover,
-    type: 'pie'
-  }];
-  Plotly.newPlot('pie', data); 
+$.get(`/zip_code`, function(zipResponse){
+  console.log(zipResponse);
+  var tbody = document.getElementById("tbody");
+  for (var i=1;i<areaResponse['available_zip_codes'].length; i++){
+    var tr = document.createElement("tr");
+    var td = document.createElement('td');
+    td.appendChild(document.createTextNode(areaResponse['available_zip_codes']['ZipCodes']));
+    tr.appendChild(td);
+    tbody.appendChild(tr);
+  
+  }
 });
-}
-
-
-
-function init() {
-// Grab a reference to the dropdown select element
-var selector = d3.select("#selDataset");
-
-// Use the list of sample names to populate the select options
-d3.json("/names").then((sampleNames) => {
-  sampleNames.forEach((sample) => {
-    selector
-      .append("option")
-      .text(sample)
-      .property("value", sample);
-  });
-
-  // Use the first sample from the list to build the initial plots
-  const firstSample = sampleNames[0];
-  buildCharts(firstSample);
-  buildMetadata(firstSample);
-});
-}
-
-function optionChanged(newSample) {
-// Fetch new data each time a new sample is selected
-buildCharts(newSample);
-buildMetadata(newSample);
-}
-
-// Initialize the dashboard
-init();
 
 
 // Generate map using area name
@@ -130,8 +69,8 @@ $("#submit").on("click",function(event){
           L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {              
             attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
             maxZoom: 18,
-            id: "mapbox.streets",
-            accessToken: "pk.eyJ1IjoiYW5nZWxsaXMiLCJhIjoiY2p3bGZseWptMTNneTN5cDl0NWY0dno5cSJ9.VWnRWInDd-icwQTHJ7_T0w"
+            id: "mapbox.outdoors",
+            accessToken: API_KEY
           }).addTo(myMap);
           
           // Generate locations list
@@ -184,7 +123,7 @@ $("#submit").on("click",function(event){
               L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {              
                 attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
                 maxZoom: 18,
-                id: "mapbox.streets",
+                id: "mapbox.outdoors",
                 accessToken: "pk.eyJ1IjoiYW5nZWxsaXMiLCJhIjoiY2p3bGZseWptMTNneTN5cDl0NWY0dno5cSJ9.VWnRWInDd-icwQTHJ7_T0w"
               }).addTo(myMap);
               
